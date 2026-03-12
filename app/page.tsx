@@ -12,14 +12,14 @@ export default function Home() {
           src="/saddle-bg.png"
           alt="Premium Horse Saddle"
           fill
-          className="object-cover object-center opacity-35 md:opacity-50"
+          className="object-cover object-center opacity-60 md:opacity-50"
           priority
           sizes="100vw"
           quality={90}
         />
-        {/* Dark gradient overlay for text readability — stronger on mobile */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/30 md:from-black/80 md:via-black/50 md:to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40 md:from-black/70 md:via-transparent md:to-black/30" />
+        {/* Dark gradient overlay — lighter on mobile to keep saddle prominent */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent md:from-black/80 md:via-black/50 md:to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 md:from-black/70 md:via-transparent md:to-black/30" />
       </div>
 
       {/* Navigation */}
