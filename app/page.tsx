@@ -46,7 +46,7 @@ export default function Home() {
       </nav>
 
       {/* Hero Content */}
-      <main className="relative z-10 flex flex-col justify-center items-start min-h-[calc(100vh-88px)] px-6 md:px-12 lg:px-20 max-w-7xl mx-auto pb-20">
+      <main className="relative z-10 flex flex-col justify-center items-start min-h-[calc(100vh-88px)] md:px-12 lg:px-20 max-w-7xl mx-auto pb-20 pt-10 border-2 border-white">
 
         <Badge className="mb-5 md:mb-8 bg-white/10 text-[#C8935A] hover:bg-white/15 backdrop-blur-sm px-4 py-1.5 text-[10px] md:text-xs tracking-[0.25em] uppercase font-bold border border-white/10 rounded-full">
           ✦ Handcrafted Excellence
