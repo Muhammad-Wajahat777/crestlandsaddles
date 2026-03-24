@@ -1,65 +1,249 @@
-import Image from "next/image";
+import Image from 'next/image'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
-export default function Home() {
+const products = [
+  { name: 'The Trail Master', type: 'Western Trail', desc: 'Deep seat and sturdy horn for long days on the open trail.', badge: 'Bestseller', accent: 'bg-[#2A1D14]/80', image: 'https://images.unsplash.com/photo-1517832207067-4db24a2ae47c?auto=format&fit=crop&w=1400&q=80' },
+  { name: 'The Dressage Elite', type: 'English / Dressage', desc: 'Close contact and supple leather for flawless arena performance.', badge: null, accent: 'bg-[#3A2A1D]/80', image: 'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=1400&q=80' },
+  { name: 'The Arena Pro', type: 'Show Jumping', desc: 'Forward-cut flaps for ultimate jumping confidence at every fence.', badge: 'New', accent: 'bg-[#2A1D14]/80', image: '/jumping-saddle.png' },
+]
+
+const testimonials = [
+  { quote: 'The most comfortable saddle I\'ve ridden in twenty years. The custom fit transformed my horse\'s movement completely.', name: 'Sarah Mitchell', title: 'Dressage Competitor', initial: 'S' },
+  { quote: 'My custom western saddle arrived exactly as imagined — the hand tooling is nothing short of stunning artistry.', name: 'Rick Callahan', title: 'Ranch Owner', initial: 'R' },
+  { quote: 'The team guided me through every detail. Communication was perfect and the result is a saddle I\'ll pass down to my children.', name: 'Laura Desjardins', title: 'Show Jumper', initial: 'L' },
+]
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="flex flex-col min-h-screen bg-[#F7F1EA] text-[#1F1610] font-sans selection:bg-[#C8935A]/30">
+      
+      {/* ── HERO ── */}
+      <section className="relative min-h-[88svh] md:min-h-[92svh] w-full overflow-hidden bg-[#0D0906] text-white selection:bg-[#C8935A] selection:text-black">
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/saddle-bg.png"
+            alt="Premium Horse Saddle"
+            fill
+            className="object-contain object-center scale-95 md:scale-90 opacity-95 md:opacity-85"
+            priority
+            sizes="100vw"
+            quality={90}
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent md:from-black/80 md:via-black/50 md:to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 md:from-black/70 md:via-transparent md:to-black/30" />
+        </div>
+
+        <main className="relative z-10 flex flex-col justify-center items-start min-h-[calc(88svh-80px)] md:min-h-[calc(92svh-88px)] px-6 md:px-12 lg:px-20 max-w-7xl mx-auto pb-12 md:pb-16 pt-24 md:pt-28">
+          <Badge className="mb-4 md:mb-6 bg-white/10 text-[#C8935A] hover:bg-white/15 backdrop-blur-sm px-4 py-1.5 text-[10px] md:text-xs tracking-[0.25em] uppercase font-bold border border-white/10 rounded-full">
+            Handcrafted Excellence
+          </Badge>
+
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-tight mb-4 md:mb-6 leading-[1.08] max-w-3xl">
+            The Art of
+            <br />
+            <span className="font-serif italic text-[#C8935A]">Equestrian</span>
+            <br className="hidden sm:block" />
+            {' '}Mastery.
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <p className="text-sm md:text-base text-white/60 mb-6 md:mb-8 max-w-md leading-relaxed">
+            Each saddle is meticulously handcrafted from premium full-grain Italian leather - designed for perfect balance, superior grip, and an unparalleled bond between rider and horse.
           </p>
+
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
+            <Button asChild size="lg" className="bg-[#C8935A] hover:bg-[#A87844] text-black font-semibold h-11 md:h-12 px-7 md:px-9 text-sm md:text-base rounded-full shadow-xl shadow-[#C8935A]/25 transition-all duration-300 hover:shadow-[#C8935A]/40 active:scale-95">
+              <Link href="/products">Explore Collection</Link>
+            </Button>
+            <Button asChild size="lg" variant="ghost" className="h-11 md:h-12 px-7 md:px-9 text-sm md:text-base text-white/80 hover:text-white hover:bg-white/10 border border-white/15 rounded-full transition-all duration-300 active:scale-95 backdrop-blur-sm">
+              <Link href="/about">Watch Our Story</Link>
+            </Button>
+          </div>
+
+          <div className="hidden md:flex mt-10 lg:mt-12 items-center gap-8 lg:gap-12 pt-6 border-t border-white/10 w-full max-w-xl">
+            <div>
+              <p className="text-2xl sm:text-3xl md:text-4xl font-light text-white">50<span className="text-[#C8935A]">+</span></p>
+              <p className="text-[10px] md:text-xs text-white/40 tracking-[0.2em] uppercase font-medium mt-1">Years of Craft</p>
+            </div>
+            <div className="w-px h-10 md:h-14 bg-white/10"></div>
+            <div>
+              <p className="text-2xl sm:text-3xl md:text-4xl font-light text-white">1,200<span className="text-[#C8935A]">+</span></p>
+              <p className="text-[10px] md:text-xs text-white/40 tracking-[0.2em] uppercase font-medium mt-1">Saddles Delivered</p>
+            </div>
+            <div className="w-px h-10 md:h-14 bg-white/10"></div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <p className="text-2xl sm:text-3xl md:text-4xl font-light text-white">4.9</p>
+                <svg className="w-4 h-4 md:w-5 md:h-5 text-[#C8935A] mt-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+              </div>
+              <p className="text-[10px] md:text-xs text-white/40 tracking-[0.2em] uppercase font-medium mt-1">Avg. Rating</p>
+            </div>
+          </div>
+
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 hidden md:flex flex-col items-center gap-2 animate-bounce">
+            <p className="text-[10px] text-white/30 tracking-[0.3em] uppercase">Scroll</p>
+            <svg className="w-4 h-4 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </div>
+        </main>
+      </section>
+
+      {/* ── ABOUT TEASER ── */}
+      <section className="py-24 sm:py-32 bg-[#F7F1EA] relative overflow-hidden">
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-[#C8935A]/8 rounded-full blur-3xl mix-blend-multiply"></div>
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+            <div className="space-y-8">
+              <span className="text-[#A87844] font-semibold tracking-widest uppercase text-sm">Our Craft</span>
+              <h2 className="text-4xl sm:text-5xl font-light text-[#1F1610] tracking-tight">
+                More Than a Saddle —<br />
+                It&apos;s a <span className="font-serif italic text-[#A87844]">Bond</span>
+              </h2>
+              <div className="w-16 h-1 bg-[#C8935A]"></div>
+              <p className="text-lg text-[#6F5A45] leading-relaxed">
+                At Crestland Saddlery, we believe every ride tells a story. For over three decades,
+                our master craftsmen have shaped premium leather into saddles that don&apos;t just fit a
+                horse — they become part of the rider&apos;s journey.
+              </p>
+              <Link href="/about" className="inline-block mt-4 text-[#1F1610] font-medium border-b-2 border-[#C8935A] pb-1 hover:text-[#A87844] transition-colors">
+                Discover Our Story &rarr;
+              </Link>
+            </div>
+            
+            <div className="relative h-[500px] rounded-[2rem] overflow-hidden bg-[#E4D4C1] border border-[#D4C1AB] shadow-2xl group">
+              <div className="absolute inset-0 bg-[#2A1D14] flex items-center justify-center">
+                <p className="text-[#A88E76] font-light">Craftsman at work (Image Placeholder)</p>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1A120C]/80 to-transparent"></div>
+              <div className="absolute bottom-8 left-8 right-8">
+                <p className="text-white text-2xl font-serif italic mb-2">&quot;Built by hand. Ridden with pride.&quot;</p>
+                <div className="w-12 h-0.5 bg-[#C8935A]"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* ── PRODUCTS TEASER ── */}
+      <section className="py-24 sm:py-32 bg-white">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+            <div className="space-y-4">
+              <span className="text-[#A87844] font-semibold tracking-widest uppercase text-sm">Our Collection</span>
+              <h2 className="text-4xl sm:text-5xl font-light text-[#1F1610] tracking-tight">
+                Saddles for <span className="font-serif italic text-[#A87844]">Every</span> Rider
+              </h2>
+            </div>
+            <Link href="/products" className="hidden md:inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[#D4C1AB] hover:border-[#C8935A] hover:text-[#A87844] transition-colors font-medium">
+              View All Saddles &rarr;
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {products.map((p) => (
+              <Link href="/products" key={p.name} className="group flex flex-col rounded-3xl overflow-hidden border border-[#E4D4C1] bg-[#F7F1EA] hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                <div className={`relative h-64 w-full flex items-center justify-center ${p.accent}`}>
+                  {p.badge && (
+                    <span className="absolute top-4 right-4 bg-white/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full border border-white/30">
+                      {p.badge}
+                    </span>
+                  )}
+                  {p.image.startsWith('http') ? (
+                    <img
+                      src={p.image}
+                      alt={p.name}
+                      className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <Image
+                      src={p.image}
+                      alt={p.name}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      sizes="(max-width: 1024px) 100vw, 33vw"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-black/20"></div>
+                  <span className="absolute bottom-4 left-4 text-white/80 font-medium tracking-wide">{p.type}</span>
+                </div>
+                <div className="p-8 flex-1 flex flex-col">
+                  <h3 className="text-2xl font-semibold text-[#1F1610] mb-3 group-hover:text-[#8C6238] transition-colors">{p.name}</h3>
+                  <p className="text-[#6F5A45] leading-relaxed mb-6 flex-1">{p.desc}</p>
+                  <div className="inline-flex items-center text-[#A87844] font-medium group-hover:gap-2 transition-all">
+                    View Details <span className="opacity-0 group-hover:opacity-100 transition-opacity ml-1">&rarr;</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+          
+          <div className="mt-10 text-center md:hidden">
+            <Link href="/products" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-[#D4C1AB] font-medium">
+              View All Saddles &rarr;
+            </Link>
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* ── CUSTOM CTA BANNER ── */}
+      <section className="py-24 relative overflow-hidden bg-[#1A120C]">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0D0906] to-[#1A120C]"></div>
+        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#C8935A]/50 to-transparent"></div>
+        <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-8 text-center space-y-8">
+          <span className="text-[#C8935A] font-semibold tracking-widest uppercase text-sm">Made to Order</span>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-white tracking-tight">
+            Your Vision, <span className="font-serif italic text-[#C8935A]">Our Hands</span>
+          </h2>
+          <p className="text-lg text-[#D7C6B2] max-w-2xl mx-auto font-light leading-relaxed">
+            Can&apos;t find what you need? Every detail — from tree width to tooling pattern —
+            is crafted exactly as you envision it. Start your custom journey today.
+          </p>
+          <div className="pt-4">
+            <Link href="/custom-order" className="inline-block px-8 py-4 rounded-full bg-[#C8935A] hover:bg-[#D9A56E] text-[#0D0906] font-medium transition-all duration-300 hover:shadow-[0_0_30px_rgba(200,147,90,0.35)] hover:-translate-y-1">
+              Start Your Custom Order
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS ── */}
+      <section className="py-24 sm:py-32 bg-[#EFE4D7]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-16 space-y-4">
+            <span className="text-[#A87844] font-semibold tracking-widest uppercase text-sm">Testimonials</span>
+            <h2 className="text-4xl sm:text-5xl font-light text-[#1F1610] tracking-tight">
+              Riders Who <span className="font-serif italic text-[#A87844]">Trust</span> Us
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((t, i) => (
+              <div key={i} className="bg-white p-8 rounded-3xl shadow-lg border border-[#EADCCB] relative">
+                <div className="text-5xl text-[#DDB485] absolute top-6 right-8 font-serif">&quot;</div>
+                <div className="flex gap-1 text-[#C8935A] mb-6">
+                   {/* Five stars */}
+                   {[...Array(5)].map((_, j) => (
+                     <svg key={j} className="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                   ))}
+                </div>
+                <p className="text-[#3A2A1D] italic leading-relaxed mb-8 relative z-10">
+                  {t.quote}
+                </p>
+                <div className="flex flex-col border-t border-[#EADCCB] pt-6">
+                  <p className="font-semibold text-[#1F1610]">{t.name}</p>
+                  <p className="text-sm text-[#8A735C]">{t.title}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      
     </div>
-  );
+  )
 }
