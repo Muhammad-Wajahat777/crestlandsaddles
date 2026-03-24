@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { useCart } from './CartProvider'
 import { ShoppingBag, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/components/AuthProvider'
 
 const links = [
   { href: '/about',        label: 'Our Craft' },
@@ -18,14 +19,13 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const { cartCount } = useCart()
+  const { user, signOut } = useAuth()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
-
-  useEffect(() => { setMenuOpen(false) }, [pathname])
 
   const isDarkBg = pathname === '/' && !scrolled;
 
@@ -52,6 +52,7 @@ export default function Navbar() {
                 <li key={href}>
                   <Link
                     href={href}
+                    onClick={() => setMenuOpen(false)}
                     className={cn(
                       "text-sm font-medium transition-colors hover:text-[#C8935A]",
                       pathname === href ? "text-[#C8935A]" : (isDarkBg ? "text-[#D7C6B2]" : "text-[#6F5A45]")
@@ -64,6 +65,16 @@ export default function Navbar() {
             </ul>
             
             <div className="flex items-center gap-4 border-l border-[#D4C1AB] pl-8">
+              <Link
+                href="/account"
+                onClick={() => setMenuOpen(false)}
+                className={cn(
+                  'text-sm font-medium transition-colors hover:text-[#C8935A]',
+                  isDarkBg ? 'text-[#D7C6B2]' : 'text-[#6F5A45]'
+                )}
+              >
+                {user ? 'Account' : 'Sign In'}
+              </Link>
               <Link href="/cart" className="relative group">
                 <ShoppingBag className={cn(
                   "w-5 h-5 transition-colors group-hover:text-[#C8935A]",
@@ -83,6 +94,14 @@ export default function Navbar() {
               )}>
                 Order Custom
               </Link>
+              {user && (
+                <button
+                  onClick={() => void signOut()}
+                  className="text-sm font-medium text-[#6F5A45] hover:text-[#1F1610] transition-colors"
+                >
+                  Sign Out
+                </button>
+              )}
             </div>
           </div>
 
@@ -107,11 +126,23 @@ export default function Navbar() {
       {menuOpen && (
         <div className="absolute top-20 left-0 w-full bg-white border-b border-[#E4D4C1] shadow-xl md:hidden flex flex-col px-6 py-4 gap-4">
           {links.map(({ href, label }) => (
-            <Link key={href} href={href} className={cn("text-lg font-medium", pathname === href ? "text-[#C8935A]" : "text-[#1F1610]")}>
+            <Link key={href} href={href} onClick={() => setMenuOpen(false)} className={cn("text-lg font-medium", pathname === href ? "text-[#C8935A]" : "text-[#1F1610]")}>
               {label}
             </Link>
           ))}
-          <Link href="/custom-order" className="mt-4 text-center px-5 py-3 rounded-full bg-[#C8935A] text-[#0D0906] font-medium tracking-wide">
+          <Link href="/account" onClick={() => setMenuOpen(false)} className="text-lg font-medium text-[#1F1610]">{user ? 'Account' : 'Sign In'}</Link>
+          {user && (
+            <button
+              onClick={() => {
+                void signOut()
+                setMenuOpen(false)
+              }}
+              className="text-left text-lg font-medium text-[#1F1610]"
+            >
+              Sign Out
+            </button>
+          )}
+          <Link href="/custom-order" onClick={() => setMenuOpen(false)} className="mt-4 text-center px-5 py-3 rounded-full bg-[#C8935A] text-[#0D0906] font-medium tracking-wide">
             Order Custom
           </Link>
         </div>

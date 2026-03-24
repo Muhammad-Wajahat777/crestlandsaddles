@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Crestland Saddlery
 
-## Getting Started
+This project is a production-oriented Next.js storefront with Supabase as backend.
 
-First, run the development server:
+## Included Features
+
+- Admin-managed products (add/edit/delete)
+- Real stock and inventory tracking
+- User accounts, saved carts, and order history
+- Checkout records with atomic stock deduction
+- Search/filter over larger product catalogs
+
+## Setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Configure Supabase credentials directly in code:
+
+- Open `lib/supabase/client.ts`
+- Replace `SUPABASE_URL` and `SUPABASE_ANON_KEY` with your project values
+
+3. Create database objects in Supabase:
+
+- Open SQL Editor in Supabase
+- Run the SQL in `supabase/schema.sql`
+
+4. Start development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Important Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/products`: live catalog from database with search and filtering
+- `/cart`: saved carts and stock-aware checkout
+- `/account`: sign in/sign up and order history
+- `/admin/products`: admin product management
 
-## Learn More
+## Admin Access
 
-To learn more about Next.js, take a look at the following resources:
+After you create an account:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Open `profiles` table in Supabase.
+2. Set `is_admin = true` for that user.
+3. Sign in and use `/admin/products`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Notes
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Guests can build a local cart.
+- Signed-in users get persistent carts and order history.
+- RLS policies are included in `supabase/schema.sql`.
