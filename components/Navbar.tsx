@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react'
 import { useCart } from './CartProvider'
 import { ShoppingBag, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useAuth } from '@/components/AuthProvider'
 
 const links = [
   { href: '/about',        label: 'Our Craft' },
@@ -19,7 +18,6 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const { cartCount } = useCart()
-  const { user, signOut } = useAuth()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50)
@@ -65,16 +63,6 @@ export default function Navbar() {
             </ul>
             
             <div className="flex items-center gap-4 border-l border-[#D4C1AB] pl-8">
-              <Link
-                href="/account"
-                onClick={() => setMenuOpen(false)}
-                className={cn(
-                  'text-sm font-medium transition-colors hover:text-[#C8935A]',
-                  isDarkBg ? 'text-[#D7C6B2]' : 'text-[#6F5A45]'
-                )}
-              >
-                {user ? 'Account' : 'Sign In'}
-              </Link>
               <Link href="/cart" className="relative group">
                 <ShoppingBag className={cn(
                   "w-5 h-5 transition-colors group-hover:text-[#C8935A]",
@@ -94,14 +82,6 @@ export default function Navbar() {
               )}>
                 Order Custom
               </Link>
-              {user && (
-                <button
-                  onClick={() => void signOut()}
-                  className="text-sm font-medium text-[#6F5A45] hover:text-[#1F1610] transition-colors"
-                >
-                  Sign Out
-                </button>
-              )}
             </div>
           </div>
 
@@ -130,18 +110,6 @@ export default function Navbar() {
               {label}
             </Link>
           ))}
-          <Link href="/account" onClick={() => setMenuOpen(false)} className="text-lg font-medium text-[#1F1610]">{user ? 'Account' : 'Sign In'}</Link>
-          {user && (
-            <button
-              onClick={() => {
-                void signOut()
-                setMenuOpen(false)
-              }}
-              className="text-left text-lg font-medium text-[#1F1610]"
-            >
-              Sign Out
-            </button>
-          )}
           <Link href="/custom-order" onClick={() => setMenuOpen(false)} className="mt-4 text-center px-5 py-3 rounded-full bg-[#C8935A] text-[#0D0906] font-medium tracking-wide">
             Order Custom
           </Link>

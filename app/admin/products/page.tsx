@@ -1,11 +1,10 @@
 'use client'
 
-import { FormEvent, useEffect, useMemo, useState } from 'react'
+import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { supabase } from '@/lib/supabase/client'
-import { useAuth } from '@/components/AuthProvider'
 import type { Product } from '@/lib/types'
 import { Button } from '@/components/ui/button'
+import { verifySession } from '../actions'
 
 type ProductForm = {
   id?: string
@@ -35,7 +34,6 @@ const emptyForm: ProductForm = {
 }
 
 export default function AdminProductsPage() {
-  const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [allowed, setAllowed] = useState(false)
   const [products, setProducts] = useState<Product[]>([])
@@ -44,24 +42,28 @@ export default function AdminProductsPage() {
 
   const formTitle = useMemo(() => (form.id ? 'Edit Product' : 'Add Product'), [form.id])
 
-  const loadProducts = async () => {
-    const { data } = await supabase.from('products').select('*').order('created_at', { ascending: false })
-    setProducts((data ?? []) as Product[])
-  }
+  const loadProducts = useCallback(async () => {
+    const response = await fetch('/api/products?includeInactive=true', {
+      cache: 'no-store',
+    })
+
+    const result = await response.json()
+
+    if (!response.ok) {
+      setMessage(result.error ?? 'Failed to load products.')
+      setProducts([])
+      return
+    }
+
+    setProducts((result.data ?? []) as Product[])
+  }, [])
 
   useEffect(() => {
     const checkAccess = async () => {
-      if (!user) {
-        setAllowed(false)
-        setLoading(false)
-        return
-      }
+      const isAuth = await verifySession()
+      setAllowed(isAuth)
 
-      const { data } = await supabase.from('profiles').select('is_admin').eq('id', user.id).maybeSingle()
-      const canManage = Boolean(data?.is_admin)
-      setAllowed(canManage)
-
-      if (canManage) {
+      if (isAuth) {
         await loadProducts()
       }
 
@@ -69,7 +71,7 @@ export default function AdminProductsPage() {
     }
 
     void checkAccess()
-  }, [user])
+  }, [loadProducts])
 
   const resetForm = () => setForm(emptyForm)
 
@@ -91,16 +93,34 @@ export default function AdminProductsPage() {
     }
 
     if (form.id) {
-      const { error } = await supabase.from('products').update(payload).eq('id', form.id)
-      if (error) {
-        setMessage(error.message)
+      const response = await fetch(`/api/products/${form.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        setMessage(result.error ?? 'Failed to update product.')
         return
       }
       setMessage('Product updated.')
     } else {
-      const { error } = await supabase.from('products').insert(payload)
-      if (error) {
-        setMessage(error.message)
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        setMessage(result.error ?? 'Failed to create product.')
         return
       }
       setMessage('Product created.')
@@ -112,11 +132,18 @@ export default function AdminProductsPage() {
 
   const onDelete = async (id: string) => {
     setMessage(null)
-    const { error } = await supabase.from('products').delete().eq('id', id)
-    if (error) {
-      setMessage(error.message)
+
+    const response = await fetch(`/api/products/${id}`, {
+      method: 'DELETE',
+    })
+
+    const result = await response.json()
+
+    if (!response.ok) {
+      setMessage(result.error ?? 'Failed to delete product.')
       return
     }
+
     setMessage('Product deleted.')
     await loadProducts()
   }
@@ -142,20 +169,11 @@ export default function AdminProductsPage() {
     return <div className="min-h-screen bg-[#F7F1EA] pt-32 px-6">Loading admin panel...</div>
   }
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-[#F7F1EA] pt-32 px-6 text-center">
-        <p className="mb-4">Sign in first.</p>
-        <Link className="underline" href="/account">Go to account</Link>
-      </div>
-    )
-  }
-
   if (!allowed) {
     return (
       <div className="min-h-screen bg-[#F7F1EA] pt-32 px-6 text-center">
-        <p className="mb-4">Your account is not marked as admin.</p>
-        <p>Set profiles.is_admin = true for your user in Supabase.</p>
+        <p className="mb-4">You are not authenticated.</p>
+        <Link className="underline" href="/admin">Go to admin login</Link>
       </div>
     )
   }

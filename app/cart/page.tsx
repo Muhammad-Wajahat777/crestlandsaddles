@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { useCart } from '@/components/CartProvider'
-import { useAuth } from '@/components/AuthProvider'
 import { Button } from '@/components/ui/button'
 import { Trash2, Plus, Minus, ArrowRight, ShoppingBag } from 'lucide-react'
 
@@ -15,7 +14,6 @@ const money = new Intl.NumberFormat('en-US', {
 
 export default function CartPage() {
   const { items, removeFromCart, updateQuantity, cartCount, cartTotal, checkout, syncing } = useCart()
-  const { user } = useAuth()
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
   const [checkoutSuccess, setCheckoutSuccess] = useState<string | null>(null)
   const [placingOrder, setPlacingOrder] = useState(false)
@@ -165,19 +163,13 @@ export default function CartPage() {
                   <p className="text-xs text-[#A88E76] text-right mt-1">Taxes pending</p>
                 </div>
 
-                {!user && (
-                  <p className="text-xs text-[#D7C6B2] mb-4">
-                    Sign in first to place orders and save your history.
-                    {' '}
-                    <Link href="/account" className="underline">Go to account</Link>
-                  </p>
-                )}
+
 
                 {checkoutError && <p className="text-sm text-red-300 mb-4">{checkoutError}</p>}
                 {checkoutSuccess && <p className="text-sm text-green-300 mb-4">{checkoutSuccess}</p>}
 
                 <Button
-                  disabled={!user || placingOrder}
+                  disabled={placingOrder}
                   onClick={() => void handleCheckout()}
                   className="w-full bg-[#C8935A] hover:bg-[#D9A56E] text-[#0D0906] font-semibold py-6 rounded-full text-base transition-all group shadow-[0_0_20px_rgba(200,147,90,0.2)] hover:shadow-[0_0_30px_rgba(200,147,90,0.35)] hover:-translate-y-1 disabled:opacity-50"
                 >

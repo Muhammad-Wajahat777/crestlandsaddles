@@ -1,5 +1,6 @@
 'use client'
 import { useEffect } from 'react'
+import Image from 'next/image'
 
 const values = [
   { icon: '✦', title: 'Integrity in Every Stitch', desc: 'We never cut corners — literally or figuratively. Every seam, every panel, every rivet is placed with intention and care.' },
@@ -82,11 +83,14 @@ export default function AboutPage() {
             </p>
           </div>
           <div>
-            <div className="h-[500px] bg-[#C8935A] rounded flex items-center justify-center text-[#2A1D14] font-serif italic text-center reveal">
-              <div>
-                <p>Workshop photo</p>
-                <small className="block mt-1 text-xs opacity-60 font-sans not-italic">Place your image here</small>
-              </div>
+            <div className="relative h-[500px] bg-[#C8935A] rounded overflow-hidden reveal shadow-xl">
+              <Image
+                src="/craftman.png"
+                alt="Workshop photo"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
             </div>
           </div>
         </div>

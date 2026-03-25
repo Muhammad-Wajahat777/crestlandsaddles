@@ -2,12 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-
-const products = [
-  { name: 'The Trail Master', type: 'Western Trail', desc: 'Deep seat and sturdy horn for long days on the open trail.', badge: 'Bestseller', accent: 'bg-[#2A1D14]/80', image: 'https://images.unsplash.com/photo-1517832207067-4db24a2ae47c?auto=format&fit=crop&w=1400&q=80' },
-  { name: 'The Dressage Elite', type: 'English / Dressage', desc: 'Close contact and supple leather for flawless arena performance.', badge: null, accent: 'bg-[#3A2A1D]/80', image: 'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?auto=format&fit=crop&w=1400&q=80' },
-  { name: 'The Arena Pro', type: 'Show Jumping', desc: 'Forward-cut flaps for ultimate jumping confidence at every fence.', badge: 'New', accent: 'bg-[#2A1D14]/80', image: '/jumping-saddle.png' },
-]
+import { createServerSupabase } from '@/lib/supabase/server'
 
 const testimonials = [
   { quote: 'The most comfortable saddle I\'ve ridden in twenty years. The custom fit transformed my horse\'s movement completely.', name: 'Sarah Mitchell', title: 'Dressage Competitor', initial: 'S' },
@@ -15,27 +10,37 @@ const testimonials = [
   { quote: 'The team guided me through every detail. Communication was perfect and the result is a saddle I\'ll pass down to my children.', name: 'Laura Desjardins', title: 'Show Jumper', initial: 'L' },
 ]
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = createServerSupabase()
+  const { data: dbProducts } = await supabase
+    .from('products')
+    .select('*')
+    .eq('is_active', true)
+    .order('created_at', { ascending: false })
+    .limit(3)
+
+  const featuredProducts = dbProducts ?? []
+
   return (
     <div className="flex flex-col min-h-screen bg-[#F7F1EA] text-[#1F1610] font-sans selection:bg-[#C8935A]/30">
       
       {/* ── HERO ── */}
       <section className="relative min-h-[88svh] md:min-h-[92svh] w-full overflow-hidden bg-[#0D0906] text-white selection:bg-[#C8935A] selection:text-black">
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 overflow-hidden">
           <Image
             src="/saddle-bg.png"
             alt="Premium Horse Saddle"
             fill
-            className="object-contain object-center scale-95 md:scale-90 opacity-95 md:opacity-85"
+            className="object-contain object-[right_bottom] md:object-center scale-[1.4] md:scale-90 translate-x-16 translate-y-20 md:translate-x-0 md:translate-y-0 opacity-70 md:opacity-85"
             priority
             sizes="100vw"
             quality={90}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent md:from-black/80 md:via-black/50 md:to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 md:from-black/70 md:via-transparent md:to-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0D0906] via-[#0D0906]/80 to-transparent md:from-black/80 md:via-black/50 md:to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0D0906] via-transparent to-[#0D0906]/50 md:from-black/70 md:via-transparent md:to-black/30" />
         </div>
 
-        <main className="relative z-10 flex flex-col justify-center items-start min-h-[calc(88svh-80px)] md:min-h-[calc(92svh-88px)] px-6 md:px-12 lg:px-20 max-w-7xl mx-auto pb-12 md:pb-16 pt-24 md:pt-28">
+        <main className="relative z-10 flex flex-col justify-center items-start min-h-[calc(88svh-80px)] md:min-h-[calc(92svh-88px)] px-6 md:px-12 lg:px-20 max-w-7xl mx-auto pb-12 md:pb-16 pt-36 md:pt-28">
           <Badge className="mb-4 md:mb-6 bg-white/10 text-[#C8935A] hover:bg-white/15 backdrop-blur-sm px-4 py-1.5 text-[10px] md:text-xs tracking-[0.25em] uppercase font-bold border border-white/10 rounded-full">
             Handcrafted Excellence
           </Badge>
@@ -61,7 +66,7 @@ export default function HomePage() {
             </Button>
           </div>
 
-          <div className="hidden md:flex mt-10 lg:mt-12 items-center gap-8 lg:gap-12 pt-6 border-t border-white/10 w-full max-w-xl">
+          <div className="hidden md:flex mt-10 lg:mt-12 items-center justify-between pt-6 border-t border-white/10 w-full">
             <div>
               <p className="text-2xl sm:text-3xl md:text-4xl font-light text-white">50<span className="text-[#C8935A]">+</span></p>
               <p className="text-[10px] md:text-xs text-white/40 tracking-[0.2em] uppercase font-medium mt-1">Years of Craft</p>
@@ -73,13 +78,13 @@ export default function HomePage() {
             </div>
             <div className="w-px h-10 md:h-14 bg-white/10"></div>
             <div>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 justify-end">
                 <p className="text-2xl sm:text-3xl md:text-4xl font-light text-white">4.9</p>
                 <svg className="w-4 h-4 md:w-5 md:h-5 text-[#C8935A] mt-1" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                 </svg>
               </div>
-              <p className="text-[10px] md:text-xs text-white/40 tracking-[0.2em] uppercase font-medium mt-1">Avg. Rating</p>
+              <p className="text-[10px] md:text-xs text-white/40 tracking-[0.2em] uppercase font-medium mt-1 text-right">Avg. Rating</p>
             </div>
           </div>
 
@@ -115,9 +120,13 @@ export default function HomePage() {
             </div>
             
             <div className="relative h-[500px] rounded-[2rem] overflow-hidden bg-[#E4D4C1] border border-[#D4C1AB] shadow-2xl group">
-              <div className="absolute inset-0 bg-[#2A1D14] flex items-center justify-center">
-                <p className="text-[#A88E76] font-light">Craftsman at work (Image Placeholder)</p>
-              </div>
+              <Image
+                src="/craftman.png"
+                alt="Craftsman at work"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A120C]/80 to-transparent"></div>
               <div className="absolute bottom-8 left-8 right-8">
                 <p className="text-white text-2xl font-serif italic mb-2">&quot;Built by hand. Ridden with pride.&quot;</p>
@@ -144,24 +153,24 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((p) => (
-              <Link href="/products" key={p.name} className="group flex flex-col rounded-3xl overflow-hidden border border-[#E4D4C1] bg-[#F7F1EA] hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
-                <div className={`relative h-64 w-full flex items-center justify-center ${p.accent}`}>
-                  {p.badge && (
-                    <span className="absolute top-4 right-4 bg-white/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full border border-white/30">
-                      {p.badge}
-                    </span>
+            {featuredProducts.map((p, i) => (
+              <Link href="/products" key={p.id} className="group flex flex-col rounded-3xl overflow-hidden border border-[#E4D4C1] bg-[#F7F1EA] hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                <div className={`relative h-64 w-full flex items-center justify-center ${i === 0 ? 'bg-[#2A1D14]/80' : i === 1 ? 'bg-[#3A2A1D]/80' : 'bg-[#1A120C]/80'}`}>
+                  {i === 0 && (
+                     <span className="absolute top-4 right-4 bg-white/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full border border-white/30 z-10">
+                       New
+                     </span>
                   )}
-                  {p.image.startsWith('http') ? (
+                  {p.image_url.startsWith('http') ? (
                     <img
-                      src={p.image}
+                      src={p.image_url}
                       alt={p.name}
-                      className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
                       loading="lazy"
                     />
                   ) : (
                     <Image
-                      src={p.image}
+                      src={p.image_url}
                       alt={p.name}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -169,11 +178,11 @@ export default function HomePage() {
                     />
                   )}
                   <div className="absolute inset-0 bg-black/20"></div>
-                  <span className="absolute bottom-4 left-4 text-white/80 font-medium tracking-wide">{p.type}</span>
+                  <span className="absolute bottom-4 left-4 text-white/80 font-medium tracking-wide z-10">{p.category}</span>
                 </div>
                 <div className="p-8 flex-1 flex flex-col">
-                  <h3 className="text-2xl font-semibold text-[#1F1610] mb-3 group-hover:text-[#8C6238] transition-colors">{p.name}</h3>
-                  <p className="text-[#6F5A45] leading-relaxed mb-6 flex-1">{p.desc}</p>
+                  <h3 className="text-2xl font-semibold text-[#1F1610] mb-3 group-hover:text-[#8C6238] transition-colors line-clamp-1">{p.name}</h3>
+                  <p className="text-[#6F5A45] leading-relaxed mb-6 flex-1 line-clamp-3">{p.description}</p>
                   <div className="inline-flex items-center text-[#A87844] font-medium group-hover:gap-2 transition-all">
                     View Details <span className="opacity-0 group-hover:opacity-100 transition-opacity ml-1">&rarr;</span>
                   </div>

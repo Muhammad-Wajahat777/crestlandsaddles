@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { useCart } from '@/components/CartProvider'
-import { supabase } from '@/lib/supabase/client'
 import type { Product } from '@/lib/types'
 
 const money = new Intl.NumberFormat('en-US', {
@@ -28,12 +27,14 @@ export default function ProductsPage() {
 
   useEffect(() => {
     const loadCategories = async () => {
-      const { data } = await supabase
-        .from('products')
-        .select('category')
-        .eq('is_active', true)
+      const response = await fetch('/api/products', { cache: 'no-store' })
+      const result = await response.json()
 
-      const unique = Array.from(new Set((data ?? []).map((row) => row.category)))
+      if (!response.ok) {
+        return
+      }
+
+      const unique = Array.from(new Set((result.data ?? []).map((row: Product) => row.category))) as string[]
       setCategories(['All', ...unique])
     }
 
@@ -45,33 +46,26 @@ export default function ProductsPage() {
       setLoading(true)
       setError(null)
 
-      let query = supabase
-        .from('products')
-        .select('*')
-        .eq('is_active', true)
-        .order('created_at', { ascending: false })
-        .limit(100)
-
+      const params = new URLSearchParams()
       if (active !== 'All') {
-        query = query.eq('category', active)
+        params.set('category', active)
       }
 
       const searchTerm = search.trim()
       if (searchTerm) {
-        query = query.or(
-          `name.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%,purpose.ilike.%${searchTerm}%,material.ilike.%${searchTerm}%,size.ilike.%${searchTerm}%`
-        )
+        params.set('search', searchTerm)
       }
 
-      const { data, error: queryError } = await query
+      const response = await fetch(`/api/products?${params.toString()}`, { cache: 'no-store' })
+      const result = await response.json()
 
-      if (queryError) {
-        setError(queryError.message)
+      if (!response.ok) {
+        setError(result.error ?? 'Failed to load products.')
         setLoading(false)
         return
       }
 
-      setProducts((data ?? []) as Product[])
+      setProducts((result.data ?? []) as Product[])
       setLoading(false)
     }
 
