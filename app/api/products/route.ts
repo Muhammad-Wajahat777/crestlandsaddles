@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   let supabase = createServerSupabase()
 
   if (includeInactive) {
-    const admin = await requireAdmin(request)
+    const admin = await requireAdmin()
     if (!admin.ok) {
       return NextResponse.json({ error: admin.message }, { status: admin.status })
     }
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const admin = await requireAdmin(request)
+  const admin = await requireAdmin()
   if (!admin.ok) {
     return NextResponse.json({ error: admin.message }, { status: admin.status })
   }

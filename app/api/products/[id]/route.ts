@@ -6,7 +6,7 @@ type RouteParams = {
 }
 
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
-  const admin = await requireAdmin(request)
+  const admin = await requireAdmin()
   if (!admin.ok) {
     return NextResponse.json({ error: admin.message }, { status: admin.status })
   }
@@ -42,7 +42,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  const admin = await requireAdmin(request)
+  const admin = await requireAdmin()
   if (!admin.ok) {
     return NextResponse.json({ error: admin.message }, { status: admin.status })
   }
